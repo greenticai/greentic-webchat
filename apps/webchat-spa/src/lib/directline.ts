@@ -43,7 +43,8 @@ async function requestToken(url: string): Promise<string> {
   setTokenFetchState('loading');
   const response = await fetch(url, {
     method: 'POST',
-    headers: { Accept: 'application/json' },
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: '{}',
     credentials: 'omit'
   });
   if (!response.ok) {
