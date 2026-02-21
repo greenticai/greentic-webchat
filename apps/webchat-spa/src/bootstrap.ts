@@ -62,10 +62,11 @@ export async function prepareExperience(): Promise<PreparedExperience> {
         throw new Error('Missing WebChat mount node');
       }
 
+      const domain = directLineConfig.domain || skin.directLine.domain;
       const directLineConfigOptions = {
         token: directLineConfig.token,
-        webSocket: true,
-        ...(directLineConfig.domain ? { domain: directLineConfig.domain } : {})
+        webSocket: skin.directLine.webSocket ?? true,
+        ...(domain ? { domain } : {})
       };
       const directLine = webChat.createDirectLine(directLineConfigOptions);
       const config: WebChatConfig = {

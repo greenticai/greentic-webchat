@@ -1,0 +1,34 @@
+{
+  "tenant": "local-demo",
+  "mode": "widget",
+  "brand": {
+    "name": "Greentic Local Demo",
+    "favicon": "/skins/local-demo/assets/favicon.ico",
+    "logo": "/skins/local-demo/assets/logo.svg",
+    "primary": "#0F62FE"
+  },
+  "directLine": {
+    "tokenUrl": "http://localhost:8080/v3/directline/tokens/generate?env=dev&tenant=default",
+    "domain": "http://localhost:8080/v3/directline"
+  },
+  "webchat": {
+    "styleOptions": "/skins/local-demo/webchat/styleOptions.json",
+    "adaptiveCardsHostConfig": "/skins/local-demo/webchat/hostconfig.json",
+    "locale": "en-US"
+  },
+  "statusBar": {
+    "show": true,
+    "brand": {
+      "ok": "#22c55e",
+      "warn": "#f59e0b",
+      "err": "#ef4444"
+    }
+  },
+  "fullpage": {
+    "index": "/skins/local-demo/fullpage/index.html",
+    "css": "/skins/local-demo/fullpage/page.css"
+  },
+  "hooks": {
+    "script": "/skins/local-demo/webchat/hooks.js"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "fontFamily": "'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
+  "spacing": {
+    "small": 6,
+    "default": 12,
+    "medium": 16,
+    "large": 20
+  },
+  "containerStyles": {
+    "default": {
+      "foregroundColors": {
+        "default": { "default": "#161616", "subtle": "#525252" },
+        "accent": { "default": "#0F62FE", "subtle": "#0F62FE" }
+      }
+    }
+  }
+}
