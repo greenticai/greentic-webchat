@@ -1,0 +1,12 @@
+{
+  "accent": "#0F62FE",
+  "botAvatarBackgroundColor": "#0F62FE",
+  "botAvatarInitials": "GA",
+  "userAvatarBackgroundColor": "#021D4A",
+  "userAvatarInitials": "You",
+  "hideUploadButton": true,
+  "bubbleBorderRadius": 8,
+  "bubbleFromUserBorderRadius": 8,
+  "bubbleNubSize": 4,
+  "bubbleNubOffset": 0
+}

@@ -9,8 +9,7 @@
   },
   "directLine": {
     "tokenUrl": "http://localhost:8080/v3/directline/tokens/generate?env=dev&tenant=default",
-    "domain": "http://localhost:8080/v3/directline",
-    "webSocket": false
+    "domain": "http://localhost:8080/v3/directline"
   },
   "webchat": {
     "styleOptions": "/skins/local-demo/webchat/styleOptions.json",

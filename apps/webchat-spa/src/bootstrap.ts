@@ -65,7 +65,7 @@ export async function prepareExperience(): Promise<PreparedExperience> {
       const domain = directLineConfig.domain || skin.directLine.domain;
       const directLineConfigOptions = {
         token: directLineConfig.token,
-        webSocket: true,
+        webSocket: skin.directLine.webSocket ?? true,
         ...(domain ? { domain } : {})
       };
       const directLine = webChat.createDirectLine(directLineConfigOptions);

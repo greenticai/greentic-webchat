@@ -12,7 +12,8 @@ export const skinSchema = z
     }),
     directLine: z.object({
       tokenUrl: z.string().url(),
-      domain: z.string().url().optional()
+      domain: z.string().url().optional(),
+      webSocket: z.boolean().optional().default(true)
     }),
     webchat: z.object({
       styleOptions: z.string().min(1),
