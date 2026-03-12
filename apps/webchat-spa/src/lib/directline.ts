@@ -5,6 +5,11 @@ export interface DirectLineConfig {
   domain?: string;
 }
 
+export interface DirectLineSource {
+  tokenUrl: string;
+  domain?: string;
+}
+
 const DIRECT_LINE_PARAM = 'directline';
 
 function getDirectLineOverride(): string | null {
@@ -59,16 +64,21 @@ async function requestToken(url: string): Promise<string> {
   return payload.token;
 }
 
-export async function resolveDirectLineConfig(skinTokenUrl: string): Promise<DirectLineConfig> {
+export async function resolveDirectLineConfig(input: string | DirectLineSource): Promise<DirectLineConfig> {
+  const source = typeof input === 'string' ? { tokenUrl: input } : input;
+  const configuredDomain = source.domain?.trim() || undefined;
   const override = getDirectLineOverride();
   if (!override) {
-    return { token: await requestToken(skinTokenUrl) };
+    return {
+      token: await requestToken(source.tokenUrl),
+      ...(configuredDomain ? { domain: configuredDomain } : {})
+    };
   }
 
   const normalized = normalizeUrl(override);
   try {
     const token = await requestToken(normalized);
-    return { token };
+    return { token, ...(configuredDomain ? { domain: configuredDomain } : {}) };
   } catch (error) {
     let parsedUrl: URL;
     try {
@@ -79,7 +89,7 @@ export async function resolveDirectLineConfig(skinTokenUrl: string): Promise<Dir
     if (!looksLikeDirectLineDomain(parsedUrl)) {
       throw error;
     }
-    const token = await requestToken(skinTokenUrl);
+    const token = await requestToken(source.tokenUrl);
     const domain = buildDirectLineDomain(parsedUrl);
     return { token, domain };
   }

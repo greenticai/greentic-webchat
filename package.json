@@ -9,6 +9,8 @@
   "scripts": {
     "build": "npm run validate:skins && npm run -w apps/webchat-spa build",
     "dev": "npm run -w apps/webchat-spa dev",
+    "i18n": "./tools/i18n.sh",
+    "test:runtime-config": "node --test apps/webchat-spa/shared/*.test.mjs",
     "validate:skins": "node scripts/validate-skins.mjs",
     "sync:cisco": "node scripts/sync-cisco-demo.mjs"
   },

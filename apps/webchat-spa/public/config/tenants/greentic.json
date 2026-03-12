@@ -1,0 +1,70 @@
+{
+  "tenant_id": "greentic",
+  "legacy_skin": "_template",
+  "branding": {
+    "company_name": { "i18n": "tenant.greentic.company_name" },
+    "tagline": { "i18n": "tenant.greentic.tagline" },
+    "logo": "/skins/_template/assets/logo.svg"
+  },
+  "navigation": {
+    "menu": [
+      { "id": "admin", "label": { "i18n": "nav.admin" }, "url": "https://example.com/admin" },
+      { "id": "store", "label": { "i18n": "nav.store" }, "url": "https://example.com/store" }
+    ]
+  },
+  "webchat": {
+    "directline": {
+      "token_url": "https://demo.greentic.ai/token?tenant=greentic"
+    },
+    "style_options": {
+      "accent": "#0F62FE",
+      "bubbleBackground": "#eef4ff",
+      "bubbleFromUserBackground": "#0F62FE",
+      "bubbleFromUserTextColor": "#ffffff",
+      "sendBoxBackground": "#ffffff",
+      "sendBoxBorderTop": "1px solid #d7d8de",
+      "sendBoxButtonColor": "#8424b8",
+      "sendBoxButtonColorOnHover": "#6f1e9b",
+      "sendBoxButtonColorOnFocus": "#6f1e9b",
+      "sendBoxButtonColorOnDisabled": "#b8a4c9",
+      "sendBoxPlaceholderColor": "#b2b4bd",
+      "sendBoxTextColor": "#6b7280"
+    },
+    "adaptive_cards_host_config": {
+      "fontFamily": "IBM Plex Sans, Arial, sans-serif",
+      "containerStyles": {
+        "default": {
+          "foregroundColors": {
+            "accent": {
+              "default": "#0F62FE",
+              "subtle": "#4f7df0"
+            }
+          }
+        }
+      }
+    },
+    "locale": "en-US"
+  },
+  "auth": {
+    "providers": [
+      {
+        "id": "greentic-demo",
+        "label": "Greentic Demo",
+        "type": "dummy",
+        "enabled": true
+      },
+      {
+        "id": "greentic-microsoft",
+        "label": "Microsoft",
+        "type": "oidc",
+        "enabled": true,
+        "authorizationUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+        "clientId": "greentic-webchat-demo",
+        "redirectUri": "https://example.com/auth/callback/greentic-microsoft",
+        "scope": "openid profile email",
+        "responseType": "code",
+        "prompt": "login"
+      }
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "tenant_id": "cisco",
+  "legacy_skin": "cisco",
+  "branding": {
+    "company_name": { "i18n": "tenant.cisco.company_name" },
+    "tagline": { "i18n": "tenant.cisco.tagline" },
+    "logo": "/skins/cisco/assets/cisco-logo.svg"
+  },
+  "navigation": {
+    "menu": [
+      { "id": "admin", "label": { "i18n": "nav.admin" }, "url": "https://example.com/admin" },
+      { "id": "store", "label": { "i18n": "nav.store" }, "url": "https://example.com/store" }
+    ]
+  },
+  "webchat": {
+    "directline": {
+      "token_url": "https://demo.greentic.ai/token?tenant=cisco",
+      "domain": "https://directline.cisco.example/v3/directline"
+    },
+    "style_options": {
+      "accent": "#005c9a",
+      "bubbleBackground": "#eef7fb",
+      "bubbleFromUserBackground": "#005c9a",
+      "bubbleFromUserTextColor": "#ffffff"
+    },
+    "adaptive_cards_host_config": {
+      "fontFamily": "Cisco Sans, Arial, sans-serif",
+      "actions": {
+        "actionsOrientation": "horizontal",
+        "buttonSpacing": 12
+      }
+    },
+    "locale": "en-US"
+  },
+  "auth": {
+    "providers": [
+      {
+        "id": "cisco-demo",
+        "label": "Cisco Demo",
+        "type": "dummy",
+        "enabled": true
+      },
+      {
+        "id": "cisco-okta",
+        "label": "Okta",
+        "type": "oidc",
+        "enabled": true,
+        "authorizationUrl": "https://example.okta.com/oauth2/default/v1/authorize",
+        "clientId": "cisco-webchat-demo",
+        "redirectUri": "https://example.com/auth/callback/cisco-okta",
+        "scope": "openid profile email",
+        "responseType": "code"
+      }
+    ]
+  }
+}

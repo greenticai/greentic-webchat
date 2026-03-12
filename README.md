@@ -43,11 +43,30 @@ packages/
 - Optional `hooks.js` modules can register store middleware or run pre-render logic.
 - Full-page skins stream their own HTML/CSS shell; widget mode renders the lightweight SPA layout.
 
+## Runtime config foundation
+
+The app now supports an additive runtime config bridge under `public/config/`:
+
+- `product.json`
+- `tenants/<tenant>.json`
+
+This foundation is intentionally non-destructive in the current stage:
+
+- tenant resolution now supports subdomain, path, and default-tenant fallback
+- Greentic is the config-level fallback tenant
+- the existing `skins/{tenant}/skin.json` boot path remains the active WebChat bridge
+- if a tenant config is missing but a legacy skin exists, the SPA still boots from the legacy skin
+
+For exact config base priority, tenant-resolution precedence, fallback order, and the `tenant.json` to `skin.json` bridge, see [`docs/runtime-config.md`](docs/runtime-config.md).
+For the supported PR-03 WebChat adapter fields and Bot Framework-safe customization boundary, see [`docs/webchat-tenant-config.md`](docs/webchat-tenant-config.md).
+
 ## Skins & docs
 
 - [`docs/skins.md`](docs/skins.md) – how to add tenants, assets, and hooks.
 - [`docs/embedding.md`](docs/embedding.md) – snippets for loading the widget from third-party sites.
 - [`docs/pages.md`](docs/pages.md) – CI/CD + custom domain instructions.
+- [`docs/playbooks.md`](docs/playbooks.md) – guided Adaptive Card playbooks and Bot Framework-safe boundaries.
+- [`docs/review-checklist.md`](docs/review-checklist.md) – pre-change and post-change validation gate before merge.
 
 ### Tenant & Base Path Resolution (GitHub Pages-friendly)
 

@@ -1,0 +1,7 @@
+{
+  "product_url": "greentic-webchat",
+  "product_name_short": { "i18n": "product.greentic.short" },
+  "product_name_long": { "i18n": "product.greentic.long" },
+  "default_tenant": "greentic",
+  "default_language": "en"
+}

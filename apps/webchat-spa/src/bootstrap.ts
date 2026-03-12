@@ -1,4 +1,3 @@
-import { resolveTenant } from './tenant';
 import {
   Skin,
   skinSchema,
@@ -9,6 +8,10 @@ import {
 } from './types';
 import { resolveDirectLineConfig } from './lib/directline';
 import { watchWebChatConnection } from './state/connection';
+import { loadRuntimeBridge } from './config/runtimeBridge';
+import type { ProductConfig, TenantConfig, TenantResolution } from './config/types';
+import { applyTenantWebChatOverrides, buildTenantWebChatSpec } from './webchat/tenantWebChatAdapter';
+import { createPlaybookStoreMiddleware } from './playbooks/middleware';
 
 const WEBCHAT_CDN = 'https://cdn.botframework.com/botframework-webchat/latest/webchat.js';
 const base = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '') + '/';
@@ -21,14 +24,27 @@ export interface PreparedExperience {
   tenant: string;
   mode: 'fullpage' | 'widget';
   skin: Skin;
+  productConfig?: ProductConfig;
+  tenantConfig?: TenantConfig;
+  tenantResolution: TenantResolution;
   shellHtml?: string;
-  renderWebChat: (target: HTMLElement) => Promise<void>;
+  renderWebChat: (
+    target: HTMLElement,
+    options?: { localeOverride?: string; messages?: Record<string, string> }
+  ) => Promise<void>;
 }
 
 export async function prepareExperience(): Promise<PreparedExperience> {
-  const { tenant, isEmbed } = resolveTenant(window.location.pathname);
-  const skin = await fetchSkin(tenant);
-  const mode: 'fullpage' | 'widget' = isEmbed ? 'widget' : skin.mode;
+  const bridge = await loadRuntimeBridge();
+  const { skin, skinTenant } = await fetchSkinWithFallback(bridge.skinCandidates);
+  const resolvedTenant =
+    bridge.requestedTenantConfig?.tenant_id ||
+    (skinTenant === bridge.requestedTenant
+      ? bridge.requestedTenant
+      : bridge.fallbackTenantConfig?.tenant_id || bridge.defaultTenant);
+  const mode: 'fullpage' | 'widget' = bridge.isEmbed ? 'widget' : skin.mode;
+  const effectiveTenantConfig = bridge.requestedTenantConfig || bridge.fallbackTenantConfig;
+  const tenantWebChat = buildTenantWebChatSpec(skin, effectiveTenantConfig);
 
   applyBranding(skin);
   if (mode === 'fullpage') {
@@ -42,26 +58,37 @@ export async function prepareExperience(): Promise<PreparedExperience> {
       ? fetchFullPageShell(resolvePublicUrl(skin.fullpage.index))
       : Promise.resolve<string | undefined>(undefined);
 
-  const [webChat, directLineConfig, styleOptions, hostConfig, hooksModule, shellHtml] = await Promise.all([
+  const [webChat, baseStyleOptions, baseHostConfig, hooksModule, shellHtml] = await Promise.all([
     ensureWebChatLoaded(),
-    resolveDirectLineConfig(skin.directLine.tokenUrl),
-    fetchJson<Record<string, unknown>>(skin.webchat.styleOptions),
-    fetchJson<Record<string, unknown>>(skin.webchat.adaptiveCardsHostConfig),
+    fetchJson<Record<string, unknown>>(tenantWebChat.styleOptionsUrl),
+    fetchJson<Record<string, unknown>>(tenantWebChat.adaptiveCardsHostConfigUrl),
     loadHooks(skin.hooks?.script),
     shellPromise
   ]);
+  const styleOptions = applyTenantWebChatOverrides(baseStyleOptions, tenantWebChat.styleOptionsOverrides);
+  const hostConfig = applyTenantWebChatOverrides(
+    baseHostConfig,
+    tenantWebChat.adaptiveCardsHostConfigOverrides
+  );
 
   return {
-    tenant,
+    tenant: resolvedTenant,
     mode,
     skin,
+    productConfig: bridge.productConfig,
+    tenantConfig: effectiveTenantConfig,
+    tenantResolution: bridge.tenantResolution,
     // shellHtml is served from a tenant-controlled template, not user input.
     shellHtml,
-    renderWebChat: async (target: HTMLElement) => {
+    renderWebChat: async (target: HTMLElement, options) => {
       if (!target) {
         throw new Error('Missing WebChat mount node');
       }
 
+      const directLineConfig = await resolveDirectLineConfig({
+        tokenUrl: tenantWebChat.directLineTokenUrl,
+        domain: tenantWebChat.directLineDomain
+      });
       const directLineConfigOptions = {
         token: directLineConfig.token,
         webSocket: true,
@@ -70,15 +97,23 @@ export async function prepareExperience(): Promise<PreparedExperience> {
       const directLine = webChat.createDirectLine(directLineConfigOptions);
       const config: WebChatConfig = {
         directLine,
-        locale: skin.webchat.locale ?? 'en-US',
+        locale: options?.localeOverride || tenantWebChat.locale,
         styleOptions,
         adaptiveCardsHostConfig: hostConfig
       };
 
-      const middleware = hooksModule?.createStoreMiddleware?.();
+      const middlewareChain = [
+        createPlaybookStoreMiddleware({
+          locale: options?.localeOverride || tenantWebChat.locale,
+          messages: options?.messages
+        }),
+        hooksModule?.createStoreMiddleware?.()
+      ].filter(Boolean);
       let store: WebChatStore | undefined;
       if (webChat.createStore) {
-        store = middleware ? webChat.createStore({}, middleware) : webChat.createStore();
+        store = middlewareChain.length
+          ? webChat.createStore({}, ...(middlewareChain as Parameters<NonNullable<typeof webChat.createStore>> extends [unknown?, ...infer T] ? T : []))
+          : webChat.createStore();
         if (store) {
           config.store = store;
         }
@@ -90,7 +125,7 @@ export async function prepareExperience(): Promise<PreparedExperience> {
         };
       });
 
-      await hooksModule?.onBeforeRender?.({ tenant, skin, webchatConfig: config });
+      await hooksModule?.onBeforeRender?.({ tenant: resolvedTenant, skin, webchatConfig: config });
       webChat.renderWebChat(config, target);
     }
   };
@@ -103,6 +138,20 @@ async function fetchSkin(tenant: string): Promise<Skin> {
   }
   const json = await response.json();
   return skinSchema.parse(json);
+}
+
+async function fetchSkinWithFallback(candidates: string[]): Promise<{ skin: Skin; skinTenant: string }> {
+  let lastError: Error | undefined;
+  for (const candidate of candidates) {
+    try {
+      const skin = await fetchSkin(candidate);
+      return { skin, skinTenant: candidate };
+    } catch (error) {
+      lastError = error as Error;
+      console.warn(`[runtime-config] Unable to load legacy skin "${candidate}"`, error);
+    }
+  }
+  throw lastError || new Error('Unable to resolve a tenant skin.');
 }
 
 async function fetchJson<T>(url: string): Promise<T> {
