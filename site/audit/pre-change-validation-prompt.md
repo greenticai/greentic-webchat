@@ -59,9 +59,9 @@ Important current constraints:
 - WebChat currently stays on standard `createDirectLine` + `renderWebChat`
 - current fallback tenant is `_template`, not Greentic
 
-### 2. zain-network intake notes
+### 2. legacy-donor-app intake notes
 
-Local repo `../zain-network` is available and was inspected directly.
+Local repo `../legacy-donor-app` is available and was inspected directly.
 
 Useful donor patterns found there:
 
@@ -77,21 +77,21 @@ Useful donor patterns found there:
 
 Key files:
 
-- `../zain-network/src/lib/configLoader.ts`
-- `../zain-network/src/lib/tenantResolver.ts`
-- `../zain-network/src/contexts/ConfigContext.tsx`
-- `../zain-network/src/contexts/AuthContext.tsx`
-- `../zain-network/src/pages/Login.tsx`
-- `../zain-network/src/i18n/index.ts`
-- `../zain-network/src/i18n/locales.ts`
-- `../zain-network/src/components/LanguageSelector.tsx`
-- `../zain-network/src/components/ZainHeader.tsx`
-- `../zain-network/src/components/ChatContainer.tsx`
-- `../zain-network/src/data/flowData.ts`
+- `../legacy-donor-app/src/lib/configLoader.ts`
+- `../legacy-donor-app/src/lib/tenantResolver.ts`
+- `../legacy-donor-app/src/contexts/ConfigContext.tsx`
+- `../legacy-donor-app/src/contexts/AuthContext.tsx`
+- `../legacy-donor-app/src/pages/Login.tsx`
+- `../legacy-donor-app/src/i18n/index.ts`
+- `../legacy-donor-app/src/i18n/locales.ts`
+- `../legacy-donor-app/src/components/LanguageSelector.tsx`
+- `../legacy-donor-app/src/components/TenantHeader.tsx`
+- `../legacy-donor-app/src/components/ChatContainer.tsx`
+- `../legacy-donor-app/src/data/flowData.ts`
 
 Important limitation:
 
-- `zain-network` uses a custom chat UI and custom card rendering, so it should not be copied directly into `greentic-webchat` for in-chat rendering.
+- `legacy-donor-app` uses a custom chat UI and custom card rendering, so it should not be copied directly into `greentic-webchat` for in-chat rendering.
 
 ### 3. File touch map
 
@@ -144,7 +144,7 @@ Migration summary:
 
 - this is not a greenfield WebChat app
 - `greentic-webchat` already has tenant-skinned WebChat foundations
-- the migration should extend the current platform rather than replace it with the `zain-network` architecture wholesale
+- the migration should extend the current platform rather than replace it with the `legacy-donor-app` architecture wholesale
 
 Auth delta:
 
@@ -204,7 +204,7 @@ Open validation question:
 Top current risks identified before coding:
 
 1. WebChat boot regression during config migration
-2. breaking Bot Framework compatibility by copying custom guided UI from `zain-network`
+2. breaking Bot Framework compatibility by copying custom guided UI from `legacy-donor-app`
 3. tenant hook growth causing unsupported WebChat behavior
 4. adding OIDC redirects without a real callback/session seam
 5. tenant resolution collisions across GitHub Pages, localhost, `/tenant`, `/tenant/embed`, and future reserved routes

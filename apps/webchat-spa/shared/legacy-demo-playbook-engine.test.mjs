@@ -5,7 +5,7 @@ import {
   buildNaturalLanguageMatchActivities,
   buildPlaybookFlowActivities,
   resolveNaturalLanguagePlaybook
-} from './playbook-engine.mjs';
+} from './legacy-demo-playbook-engine.mjs';
 
 test('resolveNaturalLanguagePlaybook maps common queries to the closest playbook', () => {
   assert.equal(
@@ -20,17 +20,20 @@ test('resolveNaturalLanguagePlaybook maps common queries to the closest playbook
 });
 
 test('buildCategoryMenuActivities emits a standard Adaptive Card menu', () => {
-  const [activity] = buildCategoryMenuActivities({});
+  const [activity] = buildCategoryMenuActivities({}, 'en-GB');
   assert.equal(activity.type, 'message');
   assert.equal(activity.attachments[0].contentType, 'application/vnd.microsoft.card.adaptive');
   assert.equal(activity.attachments[0].content.type, 'AdaptiveCard');
+  assert.equal(activity.attachments[0].content.lang, 'en-GB');
   assert.equal(activity.attachments[0].content.actions.length, 4);
 });
 
 test('buildPlaybookFlowActivities emits a standard seven-card guided flow', () => {
-  const activities = buildPlaybookFlowActivities('service-slo-sla-status', {});
+  const activities = buildPlaybookFlowActivities('service-slo-sla-status', {}, 'ar-SA');
   assert.equal(activities.length, 7);
   assert.equal(activities[0].attachments[0].content.type, 'AdaptiveCard');
+  assert.equal(activities[0].attachments[0].content.lang, 'ar-SA');
+  assert.equal(activities[0].attachments[0].content.rtl, true);
   assert.equal(activities[6].attachments[0].content.actions.length, 3);
 });
 

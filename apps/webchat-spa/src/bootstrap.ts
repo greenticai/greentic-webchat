@@ -11,14 +11,20 @@ import { watchWebChatConnection } from './state/connection';
 import { loadRuntimeBridge } from './config/runtimeBridge';
 import type { ProductConfig, TenantConfig, TenantResolution } from './config/types';
 import { applyTenantWebChatOverrides, buildTenantWebChatSpec } from './webchat/tenantWebChatAdapter';
-import { createPlaybookStoreMiddleware } from './playbooks/middleware';
+import { detectInitialLocale } from './i18n/runtimeI18n';
+import { isRtlLocale } from './i18n/locales';
 
 const WEBCHAT_CDN = 'https://cdn.botframework.com/botframework-webchat/latest/webchat.js';
 const base = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '') + '/';
 const ALLOWED_PUBLIC_PROTOCOLS = new Set(['http:', 'https:']);
+const LEGACY_DEMO_QUERY_PARAM = 'demo';
 
 let webChatPromise: Promise<WebChatExports> | undefined;
 const hooksCache = new Map<string, Promise<SkinHooksModule>>();
+
+function isLegacyDemoPlaybooksEnabled(search: string) {
+  return import.meta.env.DEV && new URLSearchParams(search).get(LEGACY_DEMO_QUERY_PARAM) === 'true';
+}
 
 export interface PreparedExperience {
   tenant: string;
@@ -89,6 +95,10 @@ export async function prepareExperience(): Promise<PreparedExperience> {
         throw new Error('Missing WebChat mount node');
       }
 
+      const locale = options?.localeOverride || detectInitialLocale(tenantWebChat.locale);
+      const direction = isRtlLocale(locale) ? 'rtl' : 'ltr';
+      const legacyDemoPlaybooksEnabled = isLegacyDemoPlaybooksEnabled(window.location.search);
+
       const directLineConfig = await resolveDirectLineConfig({
         tokenUrl: tenantWebChat.directLineTokenUrl,
         domain: tenantWebChat.directLineDomain
@@ -99,20 +109,26 @@ export async function prepareExperience(): Promise<PreparedExperience> {
         ...(directLineConfig.domain ? { domain: directLineConfig.domain } : {})
       };
       const directLine = webChat.createDirectLine(directLineConfigOptions);
+      const localizedStyleOptions = {
+        ...normalizedStyleOptions,
+        rtl: direction === 'rtl'
+      };
       const config: WebChatConfig = {
         directLine,
-        locale: options?.localeOverride || tenantWebChat.locale,
-        styleOptions: normalizedStyleOptions,
+        locale,
+        styleOptions: localizedStyleOptions,
         adaptiveCardsHostConfig: hostConfig
       };
 
-      const middlewareChain = [
-        createPlaybookStoreMiddleware({
-          locale: options?.localeOverride || tenantWebChat.locale,
-          messages: options?.messages
-        }),
-        hooksModule?.createStoreMiddleware?.()
-      ].filter(Boolean);
+      const legacyDemoMiddleware = legacyDemoPlaybooksEnabled
+        ? (
+            await import('./playbooks/legacyDemoMiddleware')
+          ).createLegacyDemoPlaybookStoreMiddleware({
+            locale,
+            messages: options?.messages
+          })
+        : undefined;
+      const middlewareChain = [legacyDemoMiddleware, hooksModule?.createStoreMiddleware?.()].filter(Boolean);
       let store: WebChatStore | undefined;
       if (webChat.createStore) {
         store = middlewareChain.length
@@ -128,6 +144,16 @@ export async function prepareExperience(): Promise<PreparedExperience> {
           subscribe: (listener: (status: unknown) => void) => { unsubscribe?: () => void };
         };
       });
+
+      target.lang = locale;
+      target.dir = direction;
+      target.setAttribute('data-webchat-locale', locale);
+      target.setAttribute('data-webchat-dir', direction);
+      target.setAttribute(
+        'data-legacy-demo-playbooks',
+        legacyDemoPlaybooksEnabled ? 'enabled' : 'disabled'
+      );
+      target.style.direction = direction;
 
       await hooksModule?.onBeforeRender?.({ tenant: resolvedTenant, skin, webchatConfig: config });
       webChat.renderWebChat(config, target);

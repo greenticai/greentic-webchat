@@ -1,6 +1,6 @@
 # Guided Playbooks
 
-PR-04 adds a guided playbook layer on top of Microsoft Bot Framework WebChat without replacing the chat renderer.
+PR-04 adds a legacy guided playbook demo layer on top of Microsoft Bot Framework WebChat without replacing the chat renderer.
 
 ## Safety boundary
 
@@ -33,6 +33,8 @@ Each launched playbook emits a fixed adaptive-card sequence:
 
 ## Current limits
 
-- The playbook layer is demo-fixture driven.
+- The playbook layer is legacy demo-only and should only be enabled in local dev with `?demo=true`.
+- Production behavior should come from the Direct Line backend, not from this repo.
+- The `demo=true` path is intentionally marked as legacy so it can be deleted later.
 - It does not call live telecom backends yet.
 - If a user message does not match a playbook, the message continues through the normal bot path.

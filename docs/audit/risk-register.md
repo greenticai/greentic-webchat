@@ -28,7 +28,7 @@ Files:
 
 Risk:
 
-- copying `zain-network` custom `ChatContainer`/`AdaptiveCard` approach directly would bypass Bot Framework rendering
+- copying `legacy-donor-app` custom `ChatContainer`/`AdaptiveCard` approach directly would bypass Bot Framework rendering
 
 Mitigation:
 

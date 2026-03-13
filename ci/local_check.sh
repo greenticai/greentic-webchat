@@ -81,9 +81,5 @@ done
 [ -e site/skins/cisco.json ] || cat > site/skins/cisco.json <<'JSON'
 { "theme":"cisco","brand":{"name":"Cisco","primary":"#005c9a","accent":"#00a0e0","text":"#0b1220"} }
 JSON
-[ -e site/skins/zain-kuwait.json ] || cat > site/skins/zain-kuwait.json <<'JSON'
-{ "theme":"zain-kuwait","brand":{"name":"Zain Kuwait","primary":"#3A0F54","accent":"#E10098","highlight":"#8CC63F","text":"#111114"} }
-JSON
-
 echo "[local_check] OK — site/ ready."
 echo "Try locally: python3 -m http.server -d site 8080"

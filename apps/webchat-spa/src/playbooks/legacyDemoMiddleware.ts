@@ -3,7 +3,7 @@ import {
   buildNaturalLanguageMatchActivities,
   buildPlaybookFlowActivities,
   buildPlaybookListActivities
-} from '../../shared/playbook-engine.mjs';
+} from '../../shared/legacy-demo-playbook-engine.mjs';
 
 interface PlaybookMiddlewareOptions {
   locale: string;
@@ -14,9 +14,11 @@ interface WebChatAction {
   type?: string;
   payload?: {
     activity?: {
+      locale?: string;
       text?: string;
       type?: string;
       value?: {
+        locale?: string;
         playbookAction?: string;
         categoryId?: string;
         playbookId?: string;
@@ -34,26 +36,27 @@ function dispatchActivities(store: { dispatch: (action: unknown) => unknown }, a
   }
 }
 
-function resolvePlaybookActivities(action: WebChatAction, messages?: Record<string, string>) {
+function resolvePlaybookActivities(action: WebChatAction, locale: string, messages?: Record<string, string>) {
   const activity = action.payload?.activity;
   const playbookAction = activity?.value?.playbookAction;
+  const effectiveLocale = activity?.locale || activity?.value?.locale || locale;
 
   if (playbookAction === 'show-categories') {
-    return buildCategoryMenuActivities(messages);
+    return buildCategoryMenuActivities(messages, effectiveLocale);
   }
   if (playbookAction === 'show-category' && activity?.value?.categoryId) {
-    return buildPlaybookListActivities(activity.value.categoryId, messages);
+    return buildPlaybookListActivities(activity.value.categoryId, messages, effectiveLocale);
   }
   if (playbookAction === 'launch-playbook' && activity?.value?.playbookId) {
-    return buildPlaybookFlowActivities(activity.value.playbookId, messages);
+    return buildPlaybookFlowActivities(activity.value.playbookId, messages, effectiveLocale);
   }
   if (activity?.type === 'message' && activity.text?.trim()) {
-    return buildNaturalLanguageMatchActivities(activity.text, messages);
+    return buildNaturalLanguageMatchActivities(activity.text, messages, effectiveLocale);
   }
   return [];
 }
 
-export function createPlaybookStoreMiddleware({ locale, messages }: PlaybookMiddlewareOptions) {
+export function createLegacyDemoPlaybookStoreMiddleware({ locale, messages }: PlaybookMiddlewareOptions) {
   let hasShownMenu = false;
 
   return (store: { dispatch: (action: unknown) => unknown }) =>
@@ -64,12 +67,12 @@ export function createPlaybookStoreMiddleware({ locale, messages }: PlaybookMidd
       if (typedAction.type === 'DIRECT_LINE/CONNECT_FULFILLED' && !hasShownMenu) {
         hasShownMenu = true;
         const result = next(action);
-        dispatchActivities(store, buildCategoryMenuActivities(messages));
+        dispatchActivities(store, buildCategoryMenuActivities(messages, locale));
         return result;
       }
 
       if (typedAction.type === 'DIRECT_LINE/POST_ACTIVITY') {
-        const activities = resolvePlaybookActivities(typedAction, messages);
+        const activities = resolvePlaybookActivities(typedAction, locale, messages);
         if (activities.length > 0) {
           dispatchActivities(store, activities);
           return false;

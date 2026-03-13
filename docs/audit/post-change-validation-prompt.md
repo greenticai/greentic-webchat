@@ -47,11 +47,11 @@ Source:
 
 Use this for baseline comparison against the original architecture.
 
-### 3. zain-network intake notes
+### 3. legacy-donor-app intake notes
 
 Source:
 
-- `docs/audit/zain-network-intake.md`
+- `docs/audit/legacy-donor-intake.md`
 
 Use this for donor-pattern comparison only, not for custom chat rendering.
 
@@ -102,8 +102,8 @@ Main implementation areas:
   - `apps/webchat-spa/src/lib/directline.ts`
   - `apps/webchat-spa/src/bootstrap.ts`
 - guided playbooks:
-  - `apps/webchat-spa/shared/playbook-engine.mjs`
-  - `apps/webchat-spa/src/playbooks/middleware.ts`
+  - `apps/webchat-spa/shared/legacy-demo-playbook-engine.mjs`
+  - `apps/webchat-spa/src/playbooks/legacyDemoMiddleware.ts`
 
 High-risk changed files:
 

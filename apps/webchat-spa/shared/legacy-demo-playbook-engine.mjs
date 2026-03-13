@@ -469,6 +469,15 @@ const FIXTURES = {
   }
 };
 
+function isRtlLocale(locale) {
+  if (!locale) {
+    return false;
+  }
+
+  const normalized = String(locale).toLowerCase();
+  return ['ar', 'fa', 'ur'].some((rtlPrefix) => normalized === rtlPrefix || normalized.startsWith(`${rtlPrefix}-`));
+}
+
 function translateMessage(messages, key, fallback, params) {
   const template = messages?.[key] || fallback;
   if (!params) {
@@ -498,8 +507,8 @@ function makeBulletList(lines) {
   }));
 }
 
-function createAdaptiveCard({ title, subtitle, body, facts, bullets, actions = [] }) {
-  return {
+function createAdaptiveCard({ title, subtitle, body, facts, bullets, actions = [], locale }) {
+  const card = {
     type: 'AdaptiveCard',
     version: '1.4',
     body: [
@@ -536,6 +545,15 @@ function createAdaptiveCard({ title, subtitle, body, facts, bullets, actions = [
     ],
     actions
   };
+
+  if (locale) {
+    card.lang = locale;
+    if (isRtlLocale(locale)) {
+      card.rtl = true;
+    }
+  }
+
+  return card;
 }
 
 function createBotActivity({ text, card, sequence }) {
@@ -600,8 +618,9 @@ export function resolveNaturalLanguagePlaybook(text) {
   return bestScore >= 2 ? bestMatch : undefined;
 }
 
-export function buildCategoryMenuActivities(messages) {
+export function buildCategoryMenuActivities(messages, locale) {
   const card = createAdaptiveCard({
+    locale,
     title: translateMessage(messages, 'playbooks.categories.title', 'Guided telecom playbooks'),
     subtitle: translateMessage(
       messages,
@@ -621,10 +640,10 @@ export function buildCategoryMenuActivities(messages) {
   return [createBotActivity({ card, sequence: 1 })];
 }
 
-export function buildPlaybookListActivities(categoryId, messages) {
+export function buildPlaybookListActivities(categoryId, messages, locale) {
   const category = findCategory(categoryId);
   if (!category) {
-    return buildCategoryMenuActivities(messages);
+    return buildCategoryMenuActivities(messages, locale);
   }
 
   const actions = PLAYBOOKS.filter((playbook) => playbook.categoryId === categoryId).map((playbook) => ({
@@ -637,6 +656,7 @@ export function buildPlaybookListActivities(categoryId, messages) {
   }));
 
   const card = createAdaptiveCard({
+    locale,
     title: translateMessage(messages, 'playbooks.list.title', 'Playbooks'),
     subtitle: getCategoryLabel(category, messages),
     actions: [
@@ -654,11 +674,11 @@ export function buildPlaybookListActivities(categoryId, messages) {
   return [createBotActivity({ card, sequence: 1 })];
 }
 
-export function buildPlaybookFlowActivities(playbookId, messages) {
+export function buildPlaybookFlowActivities(playbookId, messages, locale) {
   const playbook = findPlaybook(playbookId);
   const fixture = FIXTURES[playbookId];
   if (!playbook || !fixture) {
-    return buildCategoryMenuActivities(messages);
+    return buildCategoryMenuActivities(messages, locale);
   }
 
   const category = findCategory(playbook.categoryId);
@@ -666,36 +686,43 @@ export function buildPlaybookFlowActivities(playbookId, messages) {
 
   const cards = [
     createAdaptiveCard({
+      locale,
       title: translateMessage(messages, 'playbooks.cards.scope', 'Scope'),
       subtitle: title,
       facts: fixture.scopeFacts
     }),
     createAdaptiveCard({
+      locale,
       title: translateMessage(messages, 'playbooks.cards.understanding', 'Understanding'),
       subtitle: title,
       facts: fixture.understandingFacts
     }),
     createAdaptiveCard({
+      locale,
       title: translateMessage(messages, 'playbooks.cards.dataSources', 'Data sources'),
       subtitle: title,
       facts: fixture.dataSourceFacts
     }),
     createAdaptiveCard({
+      locale,
       title: translateMessage(messages, 'playbooks.cards.retrieval', 'Retrieval'),
       subtitle: title,
       bullets: fixture.retrievalSteps
     }),
     createAdaptiveCard({
+      locale,
       title: translateMessage(messages, 'playbooks.cards.analysis', 'Analysis'),
       subtitle: title,
       facts: fixture.analysisFacts
     }),
     createAdaptiveCard({
+      locale,
       title: translateMessage(messages, 'playbooks.cards.evidence', 'Evidence'),
       subtitle: title,
       bullets: fixture.evidenceLines
     }),
     createAdaptiveCard({
+      locale,
       title: translateMessage(messages, 'playbooks.cards.summary', 'Summary'),
       subtitle: title,
       body: fixture.summary,
@@ -741,7 +768,7 @@ export function buildPlaybookFlowActivities(playbookId, messages) {
   );
 }
 
-export function buildNaturalLanguageMatchActivities(text, messages) {
+export function buildNaturalLanguageMatchActivities(text, messages, locale) {
   const playbook = resolveNaturalLanguagePlaybook(text);
   if (!playbook) {
     return [];
@@ -754,6 +781,6 @@ export function buildNaturalLanguageMatchActivities(text, messages) {
       }),
       sequence: 0
     }),
-    ...buildPlaybookFlowActivities(playbook.id, messages)
+    ...buildPlaybookFlowActivities(playbook.id, messages, locale)
   ];
 }

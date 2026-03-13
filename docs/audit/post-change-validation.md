@@ -54,8 +54,8 @@ Major implementation areas:
   - `apps/webchat-spa/src/lib/directline.ts`
   - `apps/webchat-spa/src/bootstrap.ts`
 - guided playbooks:
-  - `apps/webchat-spa/shared/playbook-engine.mjs`
-  - `apps/webchat-spa/src/playbooks/middleware.ts`
+  - `apps/webchat-spa/shared/legacy-demo-playbook-engine.mjs`
+  - `apps/webchat-spa/src/playbooks/legacyDemoMiddleware.ts`
 - docs:
   - `docs/runtime-config.md`
   - `docs/webchat-tenant-config.md`
@@ -97,7 +97,7 @@ Known environment note:
 - tenant resolution and runtime config tests in `apps/webchat-spa/shared/runtime-config.test.mjs`
 - locale and OIDC helper tests in `apps/webchat-spa/shared/pr02-foundation.test.mjs`
 - WebChat adapter tests in `apps/webchat-spa/shared/webchat-config.test.mjs`
-- guided playbook engine tests in `apps/webchat-spa/shared/playbook-engine.test.mjs`
+- guided playbook engine tests in `apps/webchat-spa/shared/legacy-demo-playbook-engine.test.mjs`
 
 ## Known deviations or limits
 

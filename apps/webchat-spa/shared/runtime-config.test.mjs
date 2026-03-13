@@ -40,11 +40,11 @@ test('resolveTenantTarget keeps GitHub Pages path handling and embed semantics',
 test('resolveTenantTarget resolves subdomain tenant before path and supports /embed', () => {
   const result = resolveTenantTarget({
     pathname: '/embed',
-    hostname: 'zain.3aigent.com',
+    hostname: 'example.3aigent.com',
     fallbackTenant: 'greentic'
   });
 
-  assert.equal(result.tenant, 'zain');
+  assert.equal(result.tenant, 'example');
   assert.equal(result.isEmbed, true);
   assert.equal(result.source, 'subdomain');
 });

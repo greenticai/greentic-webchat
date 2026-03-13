@@ -3,7 +3,7 @@
 ## Scope inspected
 
 - `greentic-webchat`
-- local `../zain-network`
+- local `../legacy-donor-app`
 - `.codex/PR-WEBCHAT-00-audit.md` through `.codex/PR-WEBCHAT-05-validation-gate.md`
 
 ## Executive summary
@@ -23,7 +23,7 @@ It does **not** currently implement:
 - fallback to a named Greentic tenant
 - guided playbook menus inside the React SPA
 
-`zain-network` contains working reference implementations for most of those missing concerns, but its chat surface is a custom UI that renders its own card-like components rather than Microsoft Bot Framework WebChat.
+`legacy-donor-app` contains working reference implementations for most of those missing concerns, but its chat surface is a custom UI that renders its own card-like components rather than Microsoft Bot Framework WebChat.
 
 ## A. App shell and routing
 
@@ -187,7 +187,7 @@ Hardcoded assumptions include:
   - `"Locale:"`
 - root app title `"Greentic WebChat"` in `apps/webchat-spa/index.html`
 
-There are no current `zain` or `telia` assumptions in the React SPA source. Those references only appear in docs/examples such as `docs/skins/zain-kuwait.json` and `docs/zain-kuwait/index.html`.
+There are no tenant-specific assumptions in the React SPA source.
 
 ## F. Guided flow and menu implementation
 

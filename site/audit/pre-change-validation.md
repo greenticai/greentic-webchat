@@ -25,15 +25,15 @@ Summary:
 - There is no auth system, no login page, no i18n framework, no locale selector, no RTL handling, and no guided playbook UI in the current SPA.
 - WebChat compatibility is currently strong because the integration is thin: CDN WebChat load, `createDirectLine`, `renderWebChat`, tenant style options, tenant host config, and optional tenant hook middleware.
 
-## zain-network intake notes
+## legacy-donor-app intake notes
 
 Source:
 
-- `docs/audit/zain-network-intake.md`
+- `docs/audit/legacy-donor-intake.md`
 
 Summary:
 
-- `zain-network` already implements runtime config loading, tenant resolution by subdomain/path, config-driven login providers, i18n, locale persistence, RTL, tenant navigation, and guided telecom playbook flows.
+- `legacy-donor-app` already implements runtime config loading, tenant resolution by subdomain/path, config-driven login providers, i18n, locale persistence, RTL, tenant navigation, and guided telecom playbook flows.
 - Its chat UX is custom-rendered and should not be copied directly into `greentic-webchat`.
 - It is a donor for config/auth/i18n/playbook concepts, not for the WebChat rendering layer.
 
@@ -136,7 +136,7 @@ Do not start:
 
 ## Important boundary
 
-Do not copy `zain-network` UI patterns into the chat rendering layer.
+Do not copy `legacy-donor-app` UI patterns into the chat rendering layer.
 
 - shell concepts are reusable
 - chat rendering approach is not

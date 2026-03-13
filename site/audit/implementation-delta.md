@@ -37,9 +37,9 @@ Requested change:
 
 Reference source:
 
-- `../zain-network/src/pages/Login.tsx`
-- `../zain-network/src/contexts/AuthContext.tsx`
-- `../zain-network/public/config/tenants/*.json`
+- `../legacy-donor-app/src/pages/Login.tsx`
+- `../legacy-donor-app/src/contexts/AuthContext.tsx`
+- `../legacy-donor-app/public/config/tenants/*.json`
 
 Recommended implementation split:
 
@@ -78,9 +78,9 @@ Requested change:
 
 Reference source:
 
-- `../zain-network/src/i18n/index.ts`
-- `../zain-network/src/i18n/locales.ts`
-- `../zain-network/src/components/LanguageSelector.tsx`
+- `../legacy-donor-app/src/i18n/index.ts`
+- `../legacy-donor-app/src/i18n/locales.ts`
+- `../legacy-donor-app/src/components/LanguageSelector.tsx`
 
 Recommended implementation split:
 
@@ -119,9 +119,9 @@ Requested change:
 
 Reference source:
 
-- `../zain-network/src/lib/configLoader.ts`
-- `../zain-network/src/lib/tenantResolver.ts`
-- `../zain-network/src/contexts/ConfigContext.tsx`
+- `../legacy-donor-app/src/lib/configLoader.ts`
+- `../legacy-donor-app/src/lib/tenantResolver.ts`
+- `../legacy-donor-app/src/contexts/ConfigContext.tsx`
 
 Recommended implementation split:
 
@@ -160,7 +160,7 @@ Requested change:
 Reference source:
 
 - existing `greentic-webchat` bootstrap and skin assets
-- `../zain-network/public/config/tenants/*.json` only for config shape inspiration
+- `../legacy-donor-app/public/config/tenants/*.json` only for config shape inspiration
 
 Recommended implementation split:
 
@@ -192,8 +192,8 @@ Requested change:
 
 Reference source:
 
-- `../zain-network/src/components/ChatContainer.tsx`
-- `../zain-network/src/data/flowData.ts`
+- `../legacy-donor-app/src/components/ChatContainer.tsx`
+- `../legacy-donor-app/src/data/flowData.ts`
 
 Recommended implementation split:
 
@@ -206,9 +206,9 @@ Recommended implementation split:
 
 Critical boundary:
 
-- `zain-network` menu/card UX is a product reference only
+- `legacy-donor-app` menu/card UX is a product reference only
 - implementation in `greentic-webchat` must surface through bot-compatible Adaptive Cards rather than custom chat message components
 
 ## Bottom line
 
-The migration is safest if it treats `greentic-webchat` as an existing WebChat platform with missing shell features, not as an empty app to be rebuilt in the image of `zain-network`.
+The migration is safest if it treats `greentic-webchat` as an existing WebChat platform with missing shell features, not as an empty app to be rebuilt in the image of `legacy-donor-app`.

@@ -291,7 +291,7 @@ const App = () => {
                   show={skin.statusBar?.show}
                 />
               </div>
-              <div id="webchat" className="widget-surface zain-widget-surface" aria-live="polite" />
+              <div id="webchat" className="widget-surface tenant-widget-surface" aria-live="polite" />
               {chatError ? (
                 <div className="widget-fallback" role="alert">
                   <h2>{chatUnavailableTitle}</h2>
