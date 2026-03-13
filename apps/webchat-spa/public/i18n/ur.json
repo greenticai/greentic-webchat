@@ -7,7 +7,7 @@
   "chat.connectAction": "چیٹ منسلک کریں",
   "chat.connectBody": "صفحے کا shell لوڈ ہو چکا ہے۔ جب آپ چیٹ سیشن کی درخواست کرنا چاہیں تو منسلک کریں۔",
   "chat.connectTitle": "چیٹ شروع ہونے کے لیے تیار ہے",
-  "chat.retryAction": "دوبارہ منسلک کرنے کی کوشش کریں",
+  "chat.retryAction": "دوبارہ منسلک ہونے کی کوشش کریں",
   "chat.unavailableBody": "مسئلے کی وجہ کنکشن کا مسئلہ ہے۔",
   "chat.unavailableTitle": "ڈیجیٹل ورکر اس وقت دستیاب نہیں ہے",
   "header.locale": "مقامی زبان",

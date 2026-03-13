@@ -7,7 +7,7 @@
   "chat.connectAction": "チャットに接続",
   "chat.connectBody": "ページシェルは読み込まれています。チャットセッションを要求するタイミングで接続してください。",
   "chat.connectTitle": "チャットを開始する準備ができました",
-  "chat.retryAction": "再接続を試行",
+  "chat.retryAction": "再接続する",
   "chat.unavailableBody": "接続の問題が原因です。",
   "chat.unavailableTitle": "Digital Worker は現在利用できません",
   "header.locale": "ロケール",

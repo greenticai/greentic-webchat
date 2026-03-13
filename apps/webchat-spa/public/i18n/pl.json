@@ -7,7 +7,7 @@
   "chat.connectAction": "Połącz czat",
   "chat.connectBody": "Powłoka strony została załadowana. Połącz się, gdy chcesz zażądać sesji czatu.",
   "chat.connectTitle": "Czat jest gotowy do uruchomienia",
-  "chat.retryAction": "Ponów próbę połączenia",
+  "chat.retryAction": "Ponów łączenie",
   "chat.unavailableBody": "Przyczyną problemu jest problem z połączeniem.",
   "chat.unavailableTitle": "Pracownik Cyfrowy jest obecnie niedostępny",
   "header.locale": "Ustawienia regionalne",

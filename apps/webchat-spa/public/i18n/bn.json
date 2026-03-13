@@ -7,7 +7,7 @@
   "chat.connectAction": "চ্যাট সংযুক্ত করুন",
   "chat.connectBody": "পৃষ্ঠা শেল লোড হয়েছে। আপনি যখন চ্যাট সেশন অনুরোধ করতে চান তখন সংযুক্ত করুন।",
   "chat.connectTitle": "চ্যাট শুরু করার জন্য প্রস্তুত",
-  "chat.retryAction": "পুনরায় সংযোগের চেষ্টা করুন",
+  "chat.retryAction": "পুনরায় সংযোগ করার চেষ্টা করুন",
   "chat.unavailableBody": "সমস্যার উৎস একটি সংযোগজনিত সমস্যা।",
   "chat.unavailableTitle": "ডিজিটাল ওয়ার্কার বর্তমানে উপলভ্য নয়",
   "header.locale": "লোকেল",
