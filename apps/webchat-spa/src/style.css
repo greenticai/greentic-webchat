@@ -357,6 +357,42 @@ body {
   height: 100%;
 }
 
+.widget-surface .webchat__bubble,
+.widget-surface .webchat__bubble__content,
+.widget-surface .webchat__stacked-layout__message {
+  max-width: 100%;
+}
+
+.widget-surface .ac-adaptiveCard,
+.widget-surface .ac-container,
+.widget-surface .ac-columnSet,
+.widget-surface .ac-textBlock {
+  max-width: 100% !important;
+}
+
+.widget-surface .ac-adaptiveCard {
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
+.widget-surface .ac-actionSet,
+.widget-surface .ac-horizontal-separator + div[role='group'] {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.widget-surface .ac-actionSet > button,
+.widget-surface .ac-actionSet .ac-pushButton,
+.widget-surface .ac-horizontal-separator + div[role='group'] > button {
+  flex: 1 1 220px;
+  max-width: 100%;
+  min-width: 0;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+}
+
 .widget-fallback {
   margin-top: 0.8rem;
   border: 1px solid #f3c0c0;

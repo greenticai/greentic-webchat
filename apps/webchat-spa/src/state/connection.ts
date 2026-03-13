@@ -24,6 +24,24 @@ function normalizeConnectionStatus(value: unknown): WebChatConnectionStatus | un
   if (typeof value !== 'number') {
     return undefined;
   }
+
+  // Direct Line commonly emits numeric states 0..5 even when Web Chat does
+  // not expose the enum object we expect on window.WebChat.
+  switch (value) {
+    case 0:
+    case 1:
+      return 'connecting';
+    case 2:
+      return 'connected';
+    case 3:
+      return 'expiredToken';
+    case 4:
+    case 5:
+      return 'failedToConnect';
+    default:
+      break;
+  }
+
   const conn = typeof window !== 'undefined' ? window.WebChat?.ConnectionStatus : undefined;
   if (!conn) {
     return undefined;

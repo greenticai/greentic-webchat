@@ -70,6 +70,10 @@ export async function prepareExperience(): Promise<PreparedExperience> {
     baseHostConfig,
     tenantWebChat.adaptiveCardsHostConfigOverrides
   );
+  const normalizedStyleOptions = {
+    bubbleMaxWidth: 1200,
+    ...styleOptions
+  };
 
   return {
     tenant: resolvedTenant,
@@ -98,7 +102,7 @@ export async function prepareExperience(): Promise<PreparedExperience> {
       const config: WebChatConfig = {
         directLine,
         locale: options?.localeOverride || tenantWebChat.locale,
-        styleOptions,
+        styleOptions: normalizedStyleOptions,
         adaptiveCardsHostConfig: hostConfig
       };
 

@@ -30,10 +30,7 @@ export function StatusBar({
   let text = translate(messages || {}, 'status.connecting');
   let kind: 'ok' | 'warn' | 'err' = 'warn';
 
-  if (tokenFetchState === 'idle') {
-    text = translate(messages || {}, 'status.readyToConnect');
-    kind = 'warn';
-  } else if (tokenFetchState === 'error') {
+  if (tokenFetchState === 'error') {
     text = translate(messages || {}, 'status.tokenError');
     kind = 'err';
   } else if (connectionStatus === 'connected') {
@@ -42,6 +39,9 @@ export function StatusBar({
   } else if (connectionStatus === 'failedToConnect' || connectionStatus === 'expiredToken' || connectionStatus === 'reconnecting') {
     text = translate(messages || {}, 'status.disconnectedReconnecting');
     kind = 'err';
+  } else if (tokenFetchState === 'idle') {
+    text = translate(messages || {}, 'status.readyToConnect');
+    kind = 'warn';
   }
 
   return (
