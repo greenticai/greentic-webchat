@@ -88,8 +88,9 @@ Published skins (including the Cisco showcase) live under `docs/skins/`, so Page
 
 - **Local (SPA):** `npm run dev`, open `http://localhost:5173/?tenant=cisco`, confirm `window.__TENANT__ === 'cisco'`, `window.__BASE_PATH__ === '/'`, and no “Unable to load skin” banner.
 - **Local (static docs):** `npm run sync:cisco && (cd docs && python3 -m http.server 8080)`, open `http://localhost:8080/cisco?tenant=cisco`, confirm the Cisco skin loads from `/skins/cisco.json`.
-- **GitHub Pages:** `https://greentic-ai.github.io/greentic-webchat/cisco` should download `/greentic-webchat/skins/cisco.json`, log `__TENANT__ === 'cisco'`, `__BASE_PATH__ === '/greentic-webchat/'`, and render without errors—even with overrides such as `?tenant=customerb`.
+- **GitHub Pages:** `https://greenticai.github.io/greentic-webchat/cisco` should download `/greentic-webchat/skins/cisco.json`, log `__TENANT__ === 'cisco'`, `__BASE_PATH__ === '/greentic-webchat/'`, and render without errors—even with overrides such as `?tenant=customerb`.
 
 ## GitHub Pages
 
 `.github/workflows/pages.yaml` runs on every push to `main`, validates skins, builds the SPA, and deploys `/apps/webchat-spa/dist` to the Pages environment. The build copies `index.html` to `404.html` so deep links resolve without server routing.
+
