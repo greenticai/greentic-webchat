@@ -1,4 +1,0 @@
-.github/workflows/codeql.yml
-.github/workflows/codex-security-fix.yml
-.github/workflows/dependency-review.yml
-.github/workflows/pages.yaml
