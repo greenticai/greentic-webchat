@@ -61,24 +61,37 @@ test('resolveTenantTarget preserves explicit query override', () => {
   assert.equal(result.source, 'override');
 });
 
+test('resolveTenantTarget treats embed webcomponent presentation mode as embedded', () => {
+  const result = resolveTenantTarget({
+    pathname: '/v1/web/webchat/3aigent/',
+    search: '?tenant=3aigent&presentation_mode=embed_webcomponent',
+    hostname: 'localhost',
+    fallbackTenant: 'greentic'
+  });
+
+  assert.equal(result.tenant, '3aigent');
+  assert.equal(result.isEmbed, true);
+  assert.equal(result.source, 'override');
+});
+
 test('buildSkinCandidateList keeps requested legacy skin first and Greentic fallback last', () => {
   assert.deepEqual(
     buildSkinCandidateList({
       requestedTenant: 'cisco',
       requestedTenantConfig: { tenant_id: 'cisco', legacy_skin: 'cisco' },
       fallbackTenant: 'greentic',
-      fallbackTenantConfig: { tenant_id: 'greentic', legacy_skin: '_template' }
+      fallbackTenantConfig: { tenant_id: 'greentic', legacy_skin: 'default' }
     }),
-    ['cisco', '_template']
+    ['cisco', 'default']
   );
 
   assert.deepEqual(
     buildSkinCandidateList({
       requestedTenant: 'customera',
       fallbackTenant: 'greentic',
-      fallbackTenantConfig: { tenant_id: 'greentic', legacy_skin: '_template' }
+      fallbackTenantConfig: { tenant_id: 'greentic', legacy_skin: 'default' }
     }),
-    ['customera', '_template']
+    ['customera', 'default']
   );
 });
 
@@ -88,8 +101,8 @@ test('buildSkinCandidateList preserves effective fallback order for unknown tena
       requestedTenant: 'unknown-tenant',
       requestedTenantConfig: undefined,
       fallbackTenant: 'greentic',
-      fallbackTenantConfig: { tenant_id: 'greentic', legacy_skin: '_template' }
+      fallbackTenantConfig: { tenant_id: 'greentic', legacy_skin: 'default' }
     }),
-    ['unknown-tenant', '_template']
+    ['unknown-tenant', 'default']
   );
 });

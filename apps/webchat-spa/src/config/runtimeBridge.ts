@@ -66,7 +66,7 @@ export async function loadRuntimeBridge(): Promise<RuntimeBridge> {
     configBase,
     defaultTenant,
     fallbackTenantConfig: resolvedFallbackConfig,
-    isEmbed: tenantResolution.isEmbed,
+    isEmbed: tenantResolution.isEmbed || window.__GREENTIC_WEBCHAT_FORCE_EMBED__ === true,
     productConfig,
     requestedTenant,
     requestedTenantConfig,

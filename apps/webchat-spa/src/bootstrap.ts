@@ -18,6 +18,7 @@ const WEBCHAT_CDN = 'https://cdn.botframework.com/botframework-webchat/latest/we
 const base = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '') + '/';
 const ALLOWED_PUBLIC_PROTOCOLS = new Set(['http:', 'https:']);
 const LEGACY_DEMO_QUERY_PARAM = 'demo';
+const FALSE_VALUES = new Set(['0', 'false', 'off', 'no', 'disabled', 'disable']);
 
 let webChatPromise: Promise<WebChatExports> | undefined;
 const hooksCache = new Map<string, Promise<SkinHooksModule>>();
@@ -29,6 +30,7 @@ function isLegacyDemoPlaybooksEnabled(search: string) {
 export interface PreparedExperience {
   tenant: string;
   mode: 'fullpage' | 'widget';
+  textInputEnabled: boolean;
   skin: Skin;
   productConfig?: ProductConfig;
   tenantConfig?: TenantConfig;
@@ -49,12 +51,17 @@ export async function prepareExperience(): Promise<PreparedExperience> {
       ? bridge.requestedTenant
       : bridge.fallbackTenantConfig?.tenant_id || bridge.defaultTenant);
   const mode: 'fullpage' | 'widget' = bridge.isEmbed ? 'widget' : skin.mode;
+  const textInputEnabled = resolveTextInputEnabled(window.location.search);
   const effectiveTenantConfig = bridge.requestedTenantConfig || bridge.fallbackTenantConfig;
   const tenantWebChat = buildTenantWebChatSpec(skin, effectiveTenantConfig);
 
   applyBranding(skin);
+  const fullPageCssPromise =
+    mode === 'fullpage' ? applyFullPageCss(skin.fullpage.css) : Promise.resolve();
   if (mode === 'fullpage') {
-    applyFullPageCss(skin.fullpage.css);
+    fullPageCssPromise.catch((error) => {
+      console.warn('Full page skin stylesheet did not finish loading before render', error);
+    });
   } else {
     clearFullPageCss();
   }
@@ -69,7 +76,8 @@ export async function prepareExperience(): Promise<PreparedExperience> {
     fetchJson<Record<string, unknown>>(tenantWebChat.styleOptionsUrl),
     fetchJson<Record<string, unknown>>(tenantWebChat.adaptiveCardsHostConfigUrl),
     loadHooks(skin.hooks?.script),
-    shellPromise
+    shellPromise,
+    fullPageCssPromise
   ]);
   const styleOptions = applyTenantWebChatOverrides(baseStyleOptions, tenantWebChat.styleOptionsOverrides);
   const hostConfig = applyTenantWebChatOverrides(
@@ -78,12 +86,18 @@ export async function prepareExperience(): Promise<PreparedExperience> {
   );
   const normalizedStyleOptions = {
     bubbleMaxWidth: 1200,
+    rootHeight: '100%',
+    rootWidth: '100%',
     ...styleOptions
   };
+  if (!textInputEnabled) {
+    normalizedStyleOptions.hideSendBox = true;
+  }
 
   return {
     tenant: resolvedTenant,
     mode,
+    textInputEnabled,
     skin,
     productConfig: bridge.productConfig,
     tenantConfig: effectiveTenantConfig,
@@ -159,6 +173,18 @@ export async function prepareExperience(): Promise<PreparedExperience> {
       webChat.renderWebChat(config, target);
     }
   };
+}
+
+function resolveTextInputEnabled(search: string): boolean {
+  if (window.__GREENTIC_WEBCHAT_TEXT_INPUT_ENABLED__ === false) {
+    return false;
+  }
+  const params = new URLSearchParams(search);
+  const value = params.get('textInput') || params.get('text_input') || params.get('sendBox') || '';
+  if (!value.trim()) {
+    return true;
+  }
+  return !FALSE_VALUES.has(value.trim().toLowerCase());
 }
 
 async function fetchSkin(tenant: string): Promise<Skin> {
@@ -276,11 +302,12 @@ function setFavicon(href: string) {
 }
 
 let cssHandle: HTMLLinkElement | undefined;
+let cssReadyPromise: Promise<void> | undefined;
 
-function applyFullPageCss(href: string) {
+function applyFullPageCss(href: string): Promise<void> {
   const resolved = resolvePublicUrl(href);
   if (cssHandle && cssHandle.href === new URL(resolved, window.location.origin).href) {
-    return;
+    return cssReadyPromise || Promise.resolve();
   }
   if (cssHandle) {
     cssHandle.remove();
@@ -289,7 +316,16 @@ function applyFullPageCss(href: string) {
   cssHandle.rel = 'stylesheet';
   cssHandle.href = resolved;
   cssHandle.dataset.skinCss = 'true';
+  cssReadyPromise = new Promise((resolve, reject) => {
+    if (!cssHandle) {
+      resolve();
+      return;
+    }
+    cssHandle.onload = () => resolve();
+    cssHandle.onerror = () => reject(new Error(`Unable to load full page stylesheet at ${resolved}`));
+  });
   document.head.appendChild(cssHandle);
+  return cssReadyPromise;
 }
 
 function clearFullPageCss() {
@@ -297,6 +333,7 @@ function clearFullPageCss() {
     cssHandle.remove();
     cssHandle = undefined;
   }
+  cssReadyPromise = undefined;
 }
 
 function getRuntimeBase(): string {

@@ -7,7 +7,7 @@
   "chat.connectAction": "Conectați chatul",
   "chat.connectBody": "Structura paginii este încărcată. Conectați-vă când doriți să solicitați o sesiune de chat.",
   "chat.connectTitle": "Chatul este gata să înceapă",
-  "chat.retryAction": "Reîncercați conectarea",
+  "chat.retryAction": "Reîncearcă conectarea",
   "chat.unavailableBody": "O problemă de conexiune este sursa problemei.",
   "chat.unavailableTitle": "Lucrătorul Digital este momentan indisponibil",
   "header.locale": "Setări regionale",

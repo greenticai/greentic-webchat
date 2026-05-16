@@ -7,7 +7,7 @@
   "chat.connectAction": "Conectar chat",
   "chat.connectBody": "La estructura de la página está cargada. Conéctate cuando quieras solicitar una sesión de chat.",
   "chat.connectTitle": "El chat está listo para comenzar",
-  "chat.retryAction": "Reintentar conexión",
+  "chat.retryAction": "Reintentar la conexión",
   "chat.unavailableBody": "Un problema de conexión es la causa del problema.",
   "chat.unavailableTitle": "El Trabajador Digital no está disponible en este momento",
   "header.locale": "Configuración regional",

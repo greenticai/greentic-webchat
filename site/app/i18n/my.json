@@ -7,7 +7,7 @@
   "chat.connectAction": "ချတ်ကို ချိတ်ဆက်ပါ",
   "chat.connectBody": "စာမျက်နှာ shell ကို ဖွင့်ပြီးပါပြီ။ ချတ်စက်ရှင် တောင်းဆိုလိုသည့်အခါ ချိတ်ဆက်ပါ။",
   "chat.connectTitle": "ချတ် စတင်ရန် အသင့်ဖြစ်ပါပြီ",
-  "chat.retryAction": "ပြန်လည်ချိတ်ဆက်ရန် ထပ်စမ်းပါ",
+  "chat.retryAction": "ချိတ်ဆက်ရန် ထပ်မံကြိုးစားပါ",
   "chat.unavailableBody": "ချိတ်ဆက်မှုဆိုင်ရာ ပြဿနာတစ်ခုကြောင့် ဖြစ်နေပါသည်။",
   "chat.unavailableTitle": "Digital Worker ကို ယခုအချိန်တွင် အသုံးမပြုနိုင်ပါ",
   "header.locale": "ဒေသသတ်မှတ်ချက်",

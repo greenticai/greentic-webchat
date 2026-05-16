@@ -24,7 +24,7 @@
     }
 
     const segments = getPathSegments();
-    return segments[0] || '_template';
+    return segments[0] || 'default';
   }
 
   function ensureTrailingSlash(input) {
@@ -47,7 +47,7 @@
     return (
       String(name || '')
         .replace(/[^a-zA-Z0-9_-]/g, '')
-        .substring(0, 64) || '_template'
+        .substring(0, 64) || 'default'
     );
   }
 

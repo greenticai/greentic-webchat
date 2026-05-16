@@ -7,7 +7,7 @@
   "chat.connectAction": "Chat verbinden",
   "chat.connectBody": "Die Seitenhülle ist geladen. Verbinden Sie sich, wenn Sie eine Chat-Sitzung anfordern möchten.",
   "chat.connectTitle": "Der Chat ist bereit zum Start",
-  "chat.retryAction": "Verbindung erneut versuchen",
+  "chat.retryAction": "Erneut verbinden",
   "chat.unavailableBody": "Ein Verbindungsproblem ist die Ursache des Problems.",
   "chat.unavailableTitle": "Der digitale Mitarbeiter ist derzeit nicht verfügbar",
   "header.locale": "Gebietsschema",

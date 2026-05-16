@@ -25,8 +25,49 @@ body {
   background: var(--shell-background);
 }
 
+html,
+body,
 #root {
-  min-height: 100vh;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+}
+
+.embed-shell {
+  width: 100vw;
+  height: 100vh;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--shell-background);
+}
+
+.embed-webchat-surface {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  background: #ffffff;
+}
+
+.embed-webchat-surface > *,
+.embed-webchat-surface .webchat,
+.embed-webchat-surface .webchat > * {
+  height: 100%;
+  min-height: 0;
+}
+
+.embed-webchat-surface .webchat__basic-transcript {
+  min-height: 0;
+}
+
+.embed-shell[data-text-input="disabled"] .webchat__send-box {
+  display: none !important;
+}
+
+.embed-fallback {
+  position: absolute;
+  inset: auto 1rem 1rem;
 }
 
 .status-card {
@@ -419,10 +460,6 @@ body {
   word-break: break-word;
 }
 
-.legacy-shell-preview {
-  display: none;
-}
-
 .login-panel {
   flex: 1;
   min-height: 0;
@@ -474,6 +511,102 @@ body {
   display: grid;
   gap: 0.875rem;
   margin-top: 1.5rem;
+}
+
+.login-shell--skin {
+  background: var(--bg-base, var(--bg, var(--shell-background)));
+  color: var(--text-primary, var(--text, var(--shell-text)));
+}
+
+.login-shell--skin .login-topbar {
+  min-height: 64px;
+}
+
+.login-topbar__left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.login-topbar__brand {
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  max-height: 40px;
+  border-radius: 50%;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+.login-topbar__info {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.login-topbar__nav {
+  flex: 1 1 auto;
+}
+
+.login-topbar__controls {
+  margin-left: auto;
+}
+
+.login-shell--skin .locale-selector__trigger {
+  color: var(--text-primary, var(--text, var(--shell-text)));
+}
+
+.login-shell--skin .locale-selector__menu {
+  background: var(--bg-panel, var(--surface, var(--shell-card)));
+  border-color: var(--border-subtle, var(--border, var(--shell-border)));
+  color: var(--text-primary, var(--text, var(--shell-text)));
+}
+
+.login-skin-panel {
+  flex: 1 1 0%;
+  min-height: 0;
+  padding: 1rem;
+  background: var(--bg-base, var(--bg, var(--shell-background)));
+}
+
+.login-skin-surface {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  padding: 2rem;
+  background: var(--bg-panel, var(--surface, var(--shell-card)));
+}
+
+.login-card--skin {
+  background: var(--bg-panel-alt, var(--surface, var(--shell-card-dark)));
+  border-color: var(--brand-border, var(--border-subtle, var(--border, var(--shell-border))));
+  color: var(--text-primary, var(--text, var(--shell-text)));
+  box-shadow: 0 18px 60px rgba(15, 23, 42, 0.16);
+}
+
+.login-card--skin .login-badge {
+  background: var(--brand-muted, var(--brand-light, rgba(15, 98, 254, 0.1)));
+  border: 1px solid var(--brand-border, var(--border-subtle, var(--border, transparent)));
+  color: var(--brand-light, var(--brand, var(--shell-accent)));
+}
+
+.login-card--skin h1 {
+  color: var(--text-primary, var(--text, var(--shell-text)));
+}
+
+.login-card--skin p,
+.login-card--skin .login-empty {
+  color: var(--text-muted, var(--shell-muted));
+}
+
+.login-card--skin .primary-button {
+  background: var(--brand, var(--shell-accent));
+  color: #ffffff;
+}
+
+.login-footer {
+  flex-shrink: 0;
 }
 
 .error-message {

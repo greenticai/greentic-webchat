@@ -1,7 +1,7 @@
 export const KNOWN_REPO_SLUGS = new Set(['greentic-webchat']);
 export const RESERVED_PATHS = new Set(['embed', 'login', 'auth', 'admin', 'store', 'playbooks']);
 export const DEFAULT_FALLBACK_TENANT = 'greentic';
-export const DEFAULT_FALLBACK_SKIN = '_template';
+export const DEFAULT_FALLBACK_SKIN = 'default';
 
 function normalizeSegment(value) {
   return String(value || '').trim();
@@ -56,7 +56,8 @@ export function resolveTenantTarget({
   explicitTenant = '',
   fallbackTenant = DEFAULT_FALLBACK_TENANT
 } = {}) {
-  const queryTenant = new URLSearchParams(search).get('tenant') || '';
+  const params = new URLSearchParams(search);
+  const queryTenant = params.get('tenant') || '';
   const overrideTenant =
     normalizeTenantValue(queryTenant) ||
     normalizeTenantValue(explicitTenant) ||
@@ -72,7 +73,12 @@ export function resolveTenantTarget({
     normalizeTenantValue(fallbackTenant) ||
     DEFAULT_FALLBACK_TENANT;
 
-  const isEmbed = segments[0] === 'embed' || segments[1] === 'embed';
+  const presentationMode = (params.get('presentation_mode') || params.get('presentationMode') || '').trim();
+  const isEmbed =
+    segments[0] === 'embed' ||
+    segments[1] === 'embed' ||
+    presentationMode === 'embed_webcomponent' ||
+    presentationMode === 'embed';
   const source = overrideTenant
     ? 'override'
     : subdomainTenant

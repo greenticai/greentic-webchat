@@ -7,7 +7,7 @@
   "chat.connectAction": "Sohbeti bağla",
   "chat.connectBody": "Sayfa kabuğu yüklendi. Bir sohbet oturumu istemek istediğinizde bağlanın.",
   "chat.connectTitle": "Sohbet başlamaya hazır",
-  "chat.retryAction": "Bağlanmayı tekrar dene",
+  "chat.retryAction": "Yeniden bağlanmayı dene",
   "chat.unavailableBody": "Sorunun kaynağı bir bağlantı sorunudur.",
   "chat.unavailableTitle": "Dijital Çalışan şu anda kullanılamıyor",
   "header.locale": "Yerel ayar",

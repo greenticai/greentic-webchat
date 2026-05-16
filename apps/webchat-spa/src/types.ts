@@ -63,6 +63,11 @@ export interface SkinHooksModule {
 
 declare global {
   interface Window {
+    __GREENTIC_WEBCHAT_FORCE_EMBED__?: boolean;
+    __GREENTIC_WEBCHAT_TEXT_INPUT_ENABLED__?: boolean;
     WebChat?: WebChatExports;
+    GreenticWebChatApp?: {
+      mount: (target: HTMLElement) => { unmount: () => void };
+    };
   }
 }

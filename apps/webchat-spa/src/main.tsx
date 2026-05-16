@@ -111,19 +111,24 @@ const App = () => {
           search: window.location.search
         })
       : { type: 'home' as const };
+  const authProviders =
+    state.status === 'ready'
+      ? (state.data.tenantConfig?.auth?.providers || []).filter((provider) => provider.enabled)
+      : [];
+  const requiresAuth = authProviders.length > 0;
 
   useEffect(() => {
-    if (!authSession.isAuthenticated) {
+    if (requiresAuth && !authSession.isAuthenticated) {
       hasRendered.current = false;
       setChatError(null);
     }
-  }, [authSession.isAuthenticated]);
+  }, [authSession.isAuthenticated, requiresAuth]);
 
   useEffect(() => {
     if (state.status !== 'ready') {
       return;
     }
-    if (!authSession.isAuthenticated || route.type !== 'home' || !messagesReady || !pageReady) {
+    if ((requiresAuth && !authSession.isAuthenticated) || route.type !== 'home' || !messagesReady || !pageReady) {
       return;
     }
     const mount = document.getElementById('webchat');
@@ -144,7 +149,7 @@ const App = () => {
         console.error('Unable to initialize Web Chat', error);
         setChatError((error as Error).message);
       });
-  }, [authSession.isAuthenticated, locale, messagesReady, pageReady, route.type, state]);
+  }, [authSession.isAuthenticated, locale, messagesReady, pageReady, requiresAuth, route.type, state]);
 
   const navigateToRoute = (routePath: string) => {
     window.history.pushState({}, '', routePath);
@@ -220,7 +225,7 @@ const App = () => {
     );
   }
 
-  if (!authSession.isAuthenticated) {
+  if (requiresAuth && !authSession.isAuthenticated) {
     return (
       <LoginPage
         currentLocale={locale}
@@ -228,8 +233,58 @@ const App = () => {
         onLocaleChange={handleLocaleChange}
         onProviderClick={handleProviderClick}
         product={state.data.productConfig}
+        skin={state.data.skin}
         tenant={state.data.tenantConfig}
       />
+    );
+  }
+
+  if (state.data.mode === 'fullpage' && state.data.shellHtml) {
+    return (
+      <div className="fullpage-shell">
+        <div className="fullpage-shell-content" dangerouslySetInnerHTML={{ __html: sanitizeShellHtml(state.data.shellHtml) }} />
+        <StatusBar
+          brand={state.data.skin.statusBar?.brand}
+          className="fullpage-status"
+          messages={messages}
+          show={state.data.skin.statusBar?.show}
+        />
+        {chatError ? (
+          <div className="widget-fallback" role="alert">
+            <h2>{chatUnavailableTitle}</h2>
+            <p>{chatUnavailableBody}</p>
+            <button
+              className="primary-button"
+              onClick={() => setState((current) => (current.status === 'ready' ? { ...current } : current))}
+            >
+              {chatRetryLabel}
+            </button>
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+
+  if (state.data.mode === 'widget') {
+    return (
+      <div
+        className="embed-shell"
+        data-text-input={state.data.textInputEnabled ? 'enabled' : 'disabled'}
+      >
+        <div id="webchat" className="embed-webchat-surface tenant-widget-surface" aria-live="polite" />
+        {chatError ? (
+          <div className="widget-fallback embed-fallback" role="alert">
+            <h2>{chatUnavailableTitle}</h2>
+            <p>{chatUnavailableBody}</p>
+            <button
+              className="primary-button"
+              onClick={() => setState((current) => (current.status === 'ready' ? { ...current } : current))}
+            >
+              {chatRetryLabel}
+            </button>
+          </div>
+        ) : null}
+      </div>
     );
   }
 
@@ -308,15 +363,27 @@ const App = () => {
           </div>
         </section>
       </main>
-      {state.data.mode === 'fullpage' && state.data.shellHtml ? (
-        <div className="legacy-shell-preview" dangerouslySetInnerHTML={{ __html: sanitizeShellHtml(state.data.shellHtml) }} />
-      ) : null}
     </div>
   );
 };
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
-);
+export function mountGreenticWebChat(target: HTMLElement) {
+  const root = ReactDOM.createRoot(target);
+  root.render(
+    <StrictMode>
+      <App />
+    </StrictMode>
+  );
+  return {
+    unmount: () => root.unmount()
+  };
+}
+
+window.GreenticWebChatApp = {
+  mount: mountGreenticWebChat
+};
+
+const rootElement = document.getElementById('root');
+if (rootElement) {
+  mountGreenticWebChat(rootElement);
+}
