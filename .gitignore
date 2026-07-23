@@ -13,7 +13,6 @@ dist/
 # Mac / Editor
 .DS_Store
 .idea/
-.vscode/
 
 # Generated artifacts
 coverage/
@@ -32,3 +31,7 @@ SECURITY_FIX_REPORT.md
 DEPENDENCY_FIX_REPORT.md
 semver-output.txt
 SEMVER_FIX_REPORT.md
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
