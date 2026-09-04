@@ -398,26 +398,39 @@ body,
   height: 100%;
 }
 
+/* Both chat surfaces need the card fit-up. Only the card rules are shared:
+   .widget-surface also carries a border and a 560px floor, which would break
+   the embed panel. */
 .widget-surface .webchat__bubble,
 .widget-surface .webchat__bubble__content,
-.widget-surface .webchat__stacked-layout__message {
+.widget-surface .webchat__stacked-layout__message,
+.embed-webchat-surface .webchat__bubble,
+.embed-webchat-surface .webchat__bubble__content,
+.embed-webchat-surface .webchat__stacked-layout__message {
   max-width: 100%;
 }
 
 .widget-surface .ac-adaptiveCard,
 .widget-surface .ac-container,
 .widget-surface .ac-columnSet,
-.widget-surface .ac-textBlock {
+.widget-surface .ac-textBlock,
+.embed-webchat-surface .ac-adaptiveCard,
+.embed-webchat-surface .ac-container,
+.embed-webchat-surface .ac-columnSet,
+.embed-webchat-surface .ac-textBlock {
   max-width: 100% !important;
 }
 
-.widget-surface .ac-adaptiveCard {
+.widget-surface .ac-adaptiveCard,
+.embed-webchat-surface .ac-adaptiveCard {
   width: 100% !important;
   box-sizing: border-box;
 }
 
 .widget-surface .ac-actionSet,
-.widget-surface .ac-horizontal-separator + div[role='group'] {
+.widget-surface .ac-horizontal-separator + div[role='group'],
+.embed-webchat-surface .ac-actionSet,
+.embed-webchat-surface .ac-horizontal-separator + div[role='group'] {
   display: flex !important;
   flex-wrap: wrap !important;
   gap: 0.75rem;
@@ -430,6 +443,18 @@ body,
   flex: 1 1 220px;
   max-width: 100%;
   min-width: 0;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+}
+
+/* 220px would put one button per row in a 420px panel. */
+.embed-webchat-surface .ac-actionSet > button,
+.embed-webchat-surface .ac-actionSet .ac-pushButton,
+.embed-webchat-surface .ac-horizontal-separator + div[role='group'] > button {
+  flex: 1 1 140px;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 40px;
   white-space: normal !important;
   overflow-wrap: anywhere;
 }
