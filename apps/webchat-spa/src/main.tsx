@@ -4,6 +4,7 @@ import './style.css';
 import { prepareExperience, PreparedExperience } from './bootstrap';
 import { StatusBar } from './components/StatusBar';
 import { sanitizeShellHtml } from './sanitizeShellHtml';
+import { localizeShellHtml } from './localizeShellHtml';
 import { detectInitialLocale, applyLocaleToDocument, loadMessagesForLocale, setStoredLocale, translate } from './i18n/runtimeI18n';
 import { AppHeader } from './components/AppHeader';
 import { LoginPage } from './components/LoginPage';
@@ -309,7 +310,7 @@ const App = () => {
         </section>
       </main>
       {state.data.mode === 'fullpage' && state.data.shellHtml ? (
-        <div className="legacy-shell-preview" dangerouslySetInnerHTML={{ __html: sanitizeShellHtml(state.data.shellHtml) }} />
+        <div className="legacy-shell-preview" dangerouslySetInnerHTML={{ __html: localizeShellHtml(sanitizeShellHtml(state.data.shellHtml), messages) }} />
       ) : null}
     </div>
   );
