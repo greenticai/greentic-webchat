@@ -22,7 +22,25 @@ const ALLOWED_TAGS = [
   'footer',
   'code'
 ];
-const ALLOWED_ATTR = ['href', 'title', 'target', 'class', 'id', 'src', 'alt', 'rel', 'aria-label', 'aria-live'];
+// `data-i18n` / `data-i18n-aria-label` name a catalog key for
+// `localizeShellHtml`.
+// They must survive sanitising: DOMPurify drops every attribute not listed
+// here, so omitting them makes the shell translation pass find nothing and
+// fail silently — the skin renders in its authored language with no error.
+const ALLOWED_ATTR = [
+  'href',
+  'title',
+  'target',
+  'class',
+  'id',
+  'src',
+  'alt',
+  'rel',
+  'aria-label',
+  'aria-live',
+  'data-i18n',
+  'data-i18n-aria-label'
+];
 
 export function escapeHtml(input: string): string {
   return input
