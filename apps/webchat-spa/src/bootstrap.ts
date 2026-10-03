@@ -11,6 +11,7 @@ import { watchWebChatConnection } from './state/connection';
 import { loadRuntimeBridge } from './config/runtimeBridge';
 import type { ProductConfig, TenantConfig, TenantResolution } from './config/types';
 import { applyTenantWebChatOverrides, buildTenantWebChatSpec } from './webchat/tenantWebChatAdapter';
+import { createLockSubmittedCardsMiddleware } from './webchat/lockSubmittedCards';
 import { detectInitialLocale } from './i18n/runtimeI18n';
 import { isRtlLocale } from './i18n/locales';
 
@@ -78,6 +79,10 @@ export async function prepareExperience(): Promise<PreparedExperience> {
   );
   const normalizedStyleOptions = {
     bubbleMaxWidth: 1200,
+    // Web Chat's send box otherwise rewrites emoticons as the user types, so
+    // "20:00" is sent as "20😲0". A skin or tenant can opt back in by setting
+    // `emojiSet` in its styleOptions.
+    emojiSet: false,
     ...styleOptions
   };
 
@@ -117,7 +122,9 @@ export async function prepareExperience(): Promise<PreparedExperience> {
         directLine,
         locale,
         styleOptions: localizedStyleOptions,
-        adaptiveCardsHostConfig: hostConfig
+        adaptiveCardsHostConfig: hostConfig,
+        // Every skin gets this: a submitted card must not stay interactive.
+        ...(webChat.hooks ? { attachmentMiddleware: createLockSubmittedCardsMiddleware(webChat.hooks) } : {})
       };
 
       const legacyDemoMiddleware = legacyDemoPlaybooksEnabled
