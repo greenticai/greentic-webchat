@@ -85,7 +85,7 @@ export async function prepareExperience(): Promise<PreparedExperience> {
     baseHostConfig,
     tenantWebChat.adaptiveCardsHostConfigOverrides
   );
-  const normalizedStyleOptions = {
+  const normalizedStyleOptions: Record<string, unknown> = {
     bubbleMaxWidth: 1200,
     rootHeight: '100%',
     rootWidth: '100%',
