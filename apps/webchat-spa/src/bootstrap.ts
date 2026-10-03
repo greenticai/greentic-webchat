@@ -11,6 +11,7 @@ import { watchWebChatConnection } from './state/connection';
 import { loadRuntimeBridge } from './config/runtimeBridge';
 import type { ProductConfig, TenantConfig, TenantResolution } from './config/types';
 import { applyTenantWebChatOverrides, buildTenantWebChatSpec } from './webchat/tenantWebChatAdapter';
+import { createLockSubmittedCardsMiddleware } from './webchat/lockSubmittedCards';
 import { detectInitialLocale } from './i18n/runtimeI18n';
 import { isRtlLocale } from './i18n/locales';
 
@@ -131,7 +132,9 @@ export async function prepareExperience(): Promise<PreparedExperience> {
         directLine,
         locale,
         styleOptions: localizedStyleOptions,
-        adaptiveCardsHostConfig: hostConfig
+        adaptiveCardsHostConfig: hostConfig,
+        // Every skin gets this: a submitted card must not stay interactive.
+        ...(webChat.hooks ? { attachmentMiddleware: createLockSubmittedCardsMiddleware(webChat.hooks) } : {})
       };
 
       const legacyDemoMiddleware = legacyDemoPlaybooksEnabled

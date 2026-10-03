@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { z } from 'zod';
 import { skinSchema } from '../shared/skin-schema.mjs';
 
@@ -19,6 +20,34 @@ export interface WebChatConfig {
   styleOptions: Record<string, unknown>;
   adaptiveCardsHostConfig: Record<string, unknown>;
   store?: WebChatStore;
+  attachmentMiddleware?: AttachmentMiddleware;
+}
+
+/** The subset of a Web Chat transcript activity the SPA reads. */
+export interface WebChatActivity {
+  id?: string;
+  type?: string;
+  from?: { role?: string };
+  channelData?: Record<string, unknown>;
+  attachments?: Array<{ contentType?: string; content?: unknown }>;
+}
+
+/** What Web Chat hands an attachment middleware for each attachment it renders. */
+export interface AttachmentMiddlewareCard {
+  activity: WebChatActivity;
+  attachment?: { contentType?: string; content?: unknown };
+}
+
+export type AttachmentRenderer = (card: AttachmentMiddlewareCard) => ReactNode;
+
+export type AttachmentMiddleware = () => (next: AttachmentRenderer) => AttachmentRenderer;
+
+/**
+ * Web Chat's own hooks. They run on Web Chat's bundled React, so a component
+ * Web Chat renders may call these and must never call the SPA's React hooks.
+ */
+export interface WebChatHooks {
+  useActivities: () => [WebChatActivity[]];
 }
 
 export interface WebChatConnectionStatusEnum {
@@ -48,6 +77,7 @@ export interface WebChatExports {
   createDirectLine: (options: DirectLineOptions) => DirectLineConnection;
   createStore?: (initialState?: Record<string, unknown>, ...middleware: StoreMiddleware[]) => WebChatStore;
   renderWebChat: (config: WebChatConfig, element: HTMLElement) => void;
+  hooks?: WebChatHooks;
 }
 
 export interface SkinHookContext {
