@@ -89,6 +89,10 @@ export async function prepareExperience(): Promise<PreparedExperience> {
     bubbleMaxWidth: 1200,
     rootHeight: '100%',
     rootWidth: '100%',
+    // Web Chat's send box otherwise rewrites emoticons as the user types, so
+    // "20:00" is sent as "20😲0". A skin or tenant can opt back in by setting
+    // `emojiSet` in its styleOptions.
+    emojiSet: false,
     ...styleOptions
   };
   if (!textInputEnabled) {
